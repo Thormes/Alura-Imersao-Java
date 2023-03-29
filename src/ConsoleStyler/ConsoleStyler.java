@@ -22,9 +22,9 @@ public class ConsoleStyler {
 
     public String backColorFromRating(String rating){
         double classificacao = Double.parseDouble(rating);
-        if (classificacao <= 4.0){
+        if (classificacao <= 5.0){
             return backColor(Cor.VERMELHO);
-        } else if (classificacao <= 7) {
+        } else if (classificacao < 8) {
             return backColor(Cor.AMARELO);
         } else{
             return backColor(Cor.VERDE);

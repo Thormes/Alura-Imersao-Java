@@ -1,4 +1,4 @@
-public enum URL {
+public enum URLList {
     TOP_MOVIES("https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json"),
     TOP_TV("https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopTVs.json"),
     POPULAR_MOVIES("https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/MostPopularMovies.json"),
@@ -6,7 +6,7 @@ public enum URL {
 
     public final String url;
 
-    URL(String url) {
+    URLList(String url) {
         this.url = url;
     }
 }
