@@ -1,3 +1,5 @@
+package ConsoleStyler;
+
 import java.nio.charset.StandardCharsets;
 
 public class ConsoleStyler {

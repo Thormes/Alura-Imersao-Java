@@ -1,3 +1,5 @@
+package ConsoleStyler;
+
 public enum Cor {
     VERDE("0;255;0"),
     VERMELHO("255;0;0"),

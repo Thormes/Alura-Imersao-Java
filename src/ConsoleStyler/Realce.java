@@ -1,3 +1,5 @@
+package ConsoleStyler;
+
 public enum Realce {
     NEGRITO("1"),
     ITALICO("3"),
