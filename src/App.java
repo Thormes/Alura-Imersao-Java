@@ -1,44 +1,48 @@
 import ConsoleStyler.ConsoleStyler;
 import ConsoleStyler.Realce;
 import ConsoleStyler.Cor;
+import Exceptions.HttpClientException;
 import GeradorFigurinhas.GeradorFigurinhas;
 
 import java.io.*;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
-import java.util.Map;
 
 public class App {
     public static void main(String[] args) throws IOException, InterruptedException {
+
+        EnvParser envparser = new EnvParser();
+        String nasa_key = envparser.properties.get("NASA_KEY");
+
         //Acessar o IMDB e buscar lista de filmes
-        String url = URLList.POPULAR_MOVIES.url;
-        HttpClient client = HttpClient.newHttpClient();
-        URI endereco = URI.create(url);
-        HttpRequest request = HttpRequest.newBuilder(endereco).GET().build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        String body = response.body();
+        API api = API.IMDB;
+
+
+        String body = "";
+        ClienteHTTP cliente = new ClienteHTTP();
+        try{
+            body = cliente.buscaDados(api.getUrl());
+        } catch (HttpClientException ex){
+            System.out.println(ex.getMessage());
+            return;
+        }
 
         //extrair só os dados que interessam (título, poster, rating)
-        JsonParser parser = new JsonParser();
-        List<Map<String, String>> listaDeFilmes = parser.parse(body);
+        List<Conteudo> lista = api.getExtrator().extraiConteudos(body);
 
         ConsoleStyler styler = new ConsoleStyler();
 
         // exibir e manipular os dados
             File diretorio = new File("figurinhas/");
             diretorio.mkdir();
-        for (Map<String, String> filme: listaDeFilmes) {
-            InputStream inputStream = new URL(filme.get("image")).openStream();
+        for (Conteudo conteudo: lista) {
+            InputStream inputStream = new URL(conteudo.urlImage()).openStream();
             GeradorFigurinhas geradora = new GeradorFigurinhas();
-            geradora.cria(inputStream, "figurinhas/" + filme.get("title") + ".png", getTextoFromClassificacao(filme.get("imDbRating")), getImageFromClassificacao(filme.get("imDbRating")));
-            System.out.println(styler.estilizado("Título: ", new String[] {styler.textColor(Cor.CINZA)})  + styler.estilizado(filme.get("title"), new String[] {Realce.NEGRITO.value}));
-            System.out.println(styler.estilizado("Poster: ", new String[] {styler.textColor(Cor.CINZA)})  + styler.estilizado(filme.get("image"), new String[] {Realce.NEGRITO.value}));
-            System.out.println(styler.estilizado("Classificação: " + filme.get("imDbRating"), new String[] {styler.backColorFromRating(filme.get("imDbRating")), styler.textColor(Cor.PRETO)}));
-            System.out.println(styler.starsFromRating(filme.get("imDbRating")));
+            geradora.cria(inputStream, "figurinhas/" + conteudo.titulo() + ".png", "TOPZERA", getImageFromClassificacao("10"));
+            System.out.println(styler.estilizado("Título: ", new String[] {styler.textColor(Cor.CINZA)})  + styler.estilizado(conteudo.titulo(), new String[] {Realce.NEGRITO.value}));
+//          System.out.println(styler.estilizado("Poster: ", new String[] {styler.textColor(Cor.CINZA)})  + styler.estilizado(filme.get("image"), new String[] {Realce.NEGRITO.value}));
+//          System.out.println(styler.estilizado("Classificação: " + filme.get("imDbRating"), new String[] {styler.backColorFromRating(filme.get("imDbRating")), styler.textColor(Cor.PRETO)}));
+//          System.out.println(styler.starsFromRating(filme.get("imDbRating")));
             System.out.println();
         }
     }
