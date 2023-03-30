@@ -15,7 +15,7 @@ public class App {
         String nasa_key = envparser.properties.get("NASA_KEY");
 
         //Acessar o IMDB e buscar lista de filmes
-        API api = API.IMDB;
+        API api = API.MARVEL;
 
 
         String body = "";
